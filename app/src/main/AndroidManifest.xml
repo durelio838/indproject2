@@ -84,6 +84,8 @@
         <activity
             android:name=".activities.TicketTypeActivity"
             android:exported="false" />
+        <activity android:name=".activities.AdminColorsActivity"/>
+
 
     </application>
 

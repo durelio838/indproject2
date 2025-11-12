@@ -45,7 +45,7 @@ public class PaintingTicketActivity extends BaseActivity {
         new Thread(() -> {
             List<Color> colors = database.colorDao().getAllColors();
             runOnUiThread(() -> {
-                ColorPickerDialog dialog = new ColorPickerDialog(this, colors, color -> {
+                ColorSelectorDialog dialog = new ColorSelectorDialog(this, colors, color -> {
                     selectedColor = color;
                     btnColor.setText(color.getName());
                 });

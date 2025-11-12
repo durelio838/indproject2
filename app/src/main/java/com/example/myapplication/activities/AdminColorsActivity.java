@@ -38,9 +38,28 @@ public class AdminColorsActivity extends BaseActivity {
 
         recyclerViewColors.setLayoutManager(new LinearLayoutManager(this));
 
-        btnAddColor.setOnClickListener(v -> {
-            // Переход на экран добавления цвета
+        // ИСПРАВЛЕНО: добавлен обработчик для кнопки добавления цвета
+        btnAddColor.setOnClickListener(v -> showAddColorDialog());
+    }
+
+    private void showAddColorDialog() {
+        ColorPickerDialog dialog = new ColorPickerDialog(this, color -> {
+            // Добавление цвета в базу данных
+            new Thread(() -> {
+                try {
+                    database.colorDao().insertColor(color);
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Цвет добавлен", Toast.LENGTH_SHORT).show();
+                        loadColors(); // Обновляем список
+                    });
+                } catch (Exception e) {
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "Ошибка добавления: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }).start();
         });
+        dialog.show();
     }
 
     private void loadColors() {
@@ -48,7 +67,7 @@ public class AdminColorsActivity extends BaseActivity {
             try {
                 List<Color> colors = database.colorDao().getAllColors();
                 colorList = colors != null ? colors : new ArrayList<>();
-                
+
                 runOnUiThread(() -> {
                     if (colorList.isEmpty()) {
                         Toast.makeText(this, "Нет цветов", Toast.LENGTH_SHORT).show();
@@ -58,7 +77,7 @@ public class AdminColorsActivity extends BaseActivity {
                 });
             } catch (Exception e) {
                 runOnUiThread(() ->
-                    Toast.makeText(this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
             }
         }).start();
@@ -68,10 +87,13 @@ public class AdminColorsActivity extends BaseActivity {
         new Thread(() -> {
             try {
                 database.colorDao().deleteColor(color);
-                loadColors();
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Цвет удален", Toast.LENGTH_SHORT).show();
+                    loadColors(); // Обновляем список после удаления
+                });
             } catch (Exception e) {
                 runOnUiThread(() ->
-                    Toast.makeText(this, "Ошибка удаления: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Ошибка удаления: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
             }
         }).start();
