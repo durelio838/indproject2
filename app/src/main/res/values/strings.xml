@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="menu">Menu</string>
+    <string name="create_ticket">Create Ticket</string>
+    <string name="ask_question">Ask Question</string>
+    <string name="my_tickets">My Tickets</string>
+</resources>

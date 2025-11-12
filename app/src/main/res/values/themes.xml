@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BASE THEME - Light by default -->
+    <style name="Theme.MyApplication" parent="Theme.Material3.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- Light Theme - Blue & Cyan Colors -->
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryVariant">@color/blue_700</item>
+        <item name="colorPrimaryContainer">@color/light_blue_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+
+        <item name="colorSecondary">@color/cyan_200</item>
+        <item name="colorSecondaryVariant">@color/cyan_500</item>
+        <item name="colorSecondaryContainer">@color/cyan_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
+
+        <item name="colorBackground">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorSurfaceVariant">@color/light_gray</item>
+        <item name="colorOnBackground">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/gray</item>
+
+        <item name="colorError">@color/error</item>
+        <item name="colorErrorContainer">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorOnErrorContainer">@color/white</item>
+
+        <item name="colorOutline">@color/gray</item>
+        <item name="colorOutlineVariant">@color/light_gray</item>
+        <item name="colorScrim">@color/black</item>
+    </style>
+
+    <!-- LIGHT THEME - White background, Blue & Cyan colors -->
+    <style name="AppTheme_Light" parent="Theme.Material3.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- Primary - Blue -->
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryVariant">@color/blue_700</item>
+        <item name="colorPrimaryContainer">@color/light_blue_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+
+        <!-- Secondary - Cyan -->
+        <item name="colorSecondary">@color/cyan_200</item>
+        <item name="colorSecondaryVariant">@color/cyan_500</item>
+        <item name="colorSecondaryContainer">@color/cyan_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Background & Surface -->
+        <item name="colorBackground">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorSurfaceVariant">@color/light_gray</item>
+        <item name="colorOnBackground">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/gray</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorErrorContainer">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorOnErrorContainer">@color/white</item>
+
+        <!-- Outline -->
+        <item name="colorOutline">@color/gray</item>
+        <item name="colorOutlineVariant">@color/light_gray</item>
+        <item name="colorScrim">@color/black</item>
+    </style>
+
+    <!-- DARK THEME - Dark background, Green colors -->
+    <style name="AppTheme_Dark" parent="Theme.Material3.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- Primary - Green Light -->
+        <item name="colorPrimary">@color/green_light</item>
+        <item name="colorPrimaryVariant">@color/green_dark</item>
+        <item name="colorPrimaryContainer">@color/green_dark</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <!-- Secondary - Green Medium -->
+        <item name="colorSecondary">@color/green_medium</item>
+        <item name="colorSecondaryVariant">@color/green_dark</item>
+        <item name="colorSecondaryContainer">@color/green_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+
+        <!-- Background & Surface -->
+        <item name="colorBackground">@color/gray_900</item>
+        <item name="colorSurface">@color/dark_gray</item>
+        <item name="colorSurfaceVariant">@color/dark_gray</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/light_gray</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorErrorContainer">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorOnErrorContainer">@color/white</item>
+
+        <!-- Outline -->
+        <item name="colorOutline">@color/light_gray</item>
+        <item name="colorOutlineVariant">@color/dark_gray</item>
+        <item name="colorScrim">@color/black</item>
+    </style>
+</resources>
