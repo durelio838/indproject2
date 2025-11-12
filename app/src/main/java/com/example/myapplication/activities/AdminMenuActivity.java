@@ -39,4 +39,13 @@ public class AdminMenuActivity extends BaseActivity {
                 startActivity(new Intent(this, AdminColorsActivity.class))
         );
     }
+
+    @Override
+    public void onBackPressed() {
+        // Переход на экран регистрации вместо выхода из приложения
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
 }

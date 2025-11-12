@@ -31,7 +31,6 @@ public class SettingsActivity extends BaseActivity {
         }
 
         initViews();
-        loadCurrentTheme();
     }
 
     private void initViews() {
@@ -44,6 +43,10 @@ public class SettingsActivity extends BaseActivity {
             findViewById(R.id.passwordSection).setVisibility(View.GONE);
         }
 
+        // ✅ ИСПРАВЛЕНО: Загружаем текущую тему ПЕРЕД установкой слушателя
+        loadCurrentTheme();
+
+        // ✅ ИСПРАВЛЕНО: Устанавливаем слушатель ПОСЛЕ загрузки темы
         radioGroupTheme.setOnCheckedChangeListener((group, checkedId) -> {
             String theme;
             if (checkedId == R.id.radioSystem) {
@@ -53,7 +56,12 @@ public class SettingsActivity extends BaseActivity {
             } else {
                 theme = "dark";
             }
-            saveTheme(theme);
+
+            // ✅ Проверяем, изменилась ли тема, перед сохранением
+            String currentTheme = preferences.getString("theme", "system");
+            if (!currentTheme.equals(theme)) {
+                saveTheme(theme);
+            }
         });
 
         btnSavePassword.setOnClickListener(v -> changePassword());
