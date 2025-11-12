@@ -51,10 +51,13 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp" />
 
+            <!-- ИСПРАВЛЕНИЕ 5: Установили minHeight для корректного отображения -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewTime"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

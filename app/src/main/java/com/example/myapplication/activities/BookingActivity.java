@@ -2,6 +2,7 @@ package com.example.myapplication.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,6 +31,9 @@ public class BookingActivity extends BaseActivity {
         setupToolbar("Выбор даты", true);
         initViews();
         setupCalendar();
+
+        // ИСПРАВЛЕНИЕ 1: Инициализируем пустой адаптер для recyclerViewTime
+        recyclerViewTime.setAdapter(new TimeSlotAdapter(new ArrayList<>(), time -> {}));
     }
 
     private void initViews() {
@@ -39,6 +43,9 @@ public class BookingActivity extends BaseActivity {
 
         recyclerViewCalendar.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTime.setLayoutManager(new GridLayoutManager(this, 3));
+
+        // ИСПРАВЛЕНИЕ 2: Делаем recyclerViewTime видимым только после выбора даты
+        recyclerViewTime.setVisibility(View.GONE);
     }
 
     private void setupCalendar() {
@@ -88,9 +95,12 @@ public class BookingActivity extends BaseActivity {
 
             runOnUiThread(() -> {
                 if (availableSlots.isEmpty()) {
-                    // Если нет свободных слотов, показываем сообщение
+                    // ИСПРАВЛЕНИЕ 3: Если нет свободных слотов, скрываем RecyclerView
                     tvSelectedDate.setText("На " + selectedDate + " все время занято");
+                    recyclerViewTime.setVisibility(View.GONE);
                 } else {
+                    // ИСПРАВЛЕНИЕ 4: Показываем RecyclerView и устанавливаем адаптер
+                    recyclerViewTime.setVisibility(View.VISIBLE);
                     TimeSlotAdapter adapter = new TimeSlotAdapter(availableSlots, time -> {
                         Intent result = new Intent();
                         result.putExtra("selectedDate", selectedDate);
