@@ -3,8 +3,11 @@ package com.example.myapplication.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.Color;
@@ -13,10 +16,12 @@ import com.example.myapplication.models.Ticket;
 import java.util.List;
 
 public class PaintingTicketActivity extends BaseActivity {
-    private EditText etCarModel;
-    private Button btnColor, btnBooking, btnCreateTicket;
-    private String selectedDate, selectedTime;
+    private TextView tvSelectedColor, tvSelectedDateTime;
+    private Button btnSelectColor, btnSelectDate, btnSubmit;
     private Color selectedColor;
+    private String selectedDate, selectedTime;
+
+    private ActivityResultLauncher<Intent> bookingLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,61 +30,80 @@ public class PaintingTicketActivity extends BaseActivity {
 
         setupToolbar("Заявка на покраску", true);
         initViews();
+        setupBookingLauncher();
     }
 
     private void initViews() {
-        etCarModel = findViewById(R.id.etCarModel);
-        btnColor = findViewById(R.id.btnColor);
-        btnBooking = findViewById(R.id.btnBooking);
-        btnCreateTicket = findViewById(R.id.btnCreateTicket);
+        tvSelectedColor = findViewById(R.id.tvSelectedColor);
+        tvSelectedDateTime = findViewById(R.id.tvSelectedDateTime);
+        btnSelectColor = findViewById(R.id.btnSelectColor);
+        btnSelectDate = findViewById(R.id.btnSelectDate);
+        btnSubmit = findViewById(R.id.btnSubmit);
 
-        btnColor.setOnClickListener(v -> showColorPicker());
-        btnBooking.setOnClickListener(v -> {
+        btnSelectColor.setOnClickListener(v -> showColorPicker());
+
+        btnSelectDate.setOnClickListener(v -> {
             Intent intent = new Intent(this, BookingActivity.class);
-            startActivityForResult(intent, 1);
+            bookingLauncher.launch(intent);
         });
-        btnCreateTicket.setOnClickListener(v -> createTicket());
+
+        btnSubmit.setOnClickListener(v -> submitTicket());
+    }
+
+    private void setupBookingLauncher() {
+        bookingLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        selectedDate = result.getData().getStringExtra("selectedDate");
+                        selectedTime = result.getData().getStringExtra("selectedTime");
+                        tvSelectedDateTime.setText("Дата и время: " + selectedDate + " " + selectedTime);
+                    }
+                });
     }
 
     private void showColorPicker() {
+        // Загружаем цвета из базы данных
         new Thread(() -> {
             List<Color> colors = database.colorDao().getAllColors();
+
             runOnUiThread(() -> {
-                ColorSelectorDialog dialog = new ColorSelectorDialog(this, colors, color -> {
-                    selectedColor = color;
-                    btnColor.setText(color.getName());
-                });
-                dialog.show();
+                if (colors.isEmpty()) {
+                    Toast.makeText(this, "Нет доступных цветов", Toast.LENGTH_SHORT).show();
+                } else {
+                    ColorSelectorDialog dialog = new ColorSelectorDialog(
+                            this,
+                            colors,
+                            color -> {
+                                selectedColor = color;
+                                tvSelectedColor.setText("Выбран цвет: " + color.getName());
+                            }
+                    );
+                    dialog.show();
+                }
             });
         }).start();
     }
 
-    private void createTicket() {
-        String carModel = etCarModel.getText().toString().trim();
-
-        if (carModel.isEmpty() || carModel.length() > 15) {
-            etCarModel.setError("Модель автомобиля должна быть от 1 до 15 символов");
-            return;
-        }
-
+    private void submitTicket() {
         if (selectedColor == null) {
-            Toast.makeText(this, "Выберите цвет покраски", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Выберите цвет", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (selectedDate == null || selectedTime == null) {
-            Toast.makeText(this, "Выберите дату и время записи", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Выберите дату и время", Toast.LENGTH_SHORT).show();
             return;
         }
 
         new Thread(() -> {
             Ticket ticket = new Ticket();
             ticket.setType("painting");
-            ticket.setCarModel(carModel);
-            ticket.setColor(selectedColor.getName());
+            ticket.setColorId(selectedColor.getId());
+            ticket.setColorName(selectedColor.getName());
             ticket.setColorCode(selectedColor.getCode());
-            ticket.setBookingDate(selectedDate);
-            ticket.setBookingTime(selectedTime);
+            ticket.setDate(selectedDate);
+            ticket.setTime(selectedTime);
             ticket.setCreatedDate(new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
 
             // Временные данные пользователя
@@ -90,20 +114,9 @@ public class PaintingTicketActivity extends BaseActivity {
             database.ticketDao().insertTicket(ticket);
 
             runOnUiThread(() -> {
-                Toast.makeText(this, "Заявка создана успешно!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, MenuActivity.class));
+                Toast.makeText(this, "Заявка создана!", Toast.LENGTH_SHORT).show();
                 finish();
             });
         }).start();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            selectedDate = data.getStringExtra("selectedDate");
-            selectedTime = data.getStringExtra("selectedTime");
-            btnBooking.setText(selectedDate + " в " + selectedTime);
-        }
     }
 }

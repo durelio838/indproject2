@@ -64,7 +64,8 @@ public class AdminColorsAdapter extends RecyclerView.Adapter<AdminColorsAdapter.
             }
             tvColorName.setText(color.getName());
             tvColorCode.setText("Код: " + color.getCode());
-            tvColorPrice.setText("Примерная цена: ~" + color.getPrice() + " ₽");
+            tvColorPrice.setText("Примерная цена: ~" + color.getApproximatePrice() + " ₽");
+
 
             btnDelete.setOnClickListener(v -> {
                 if (listener != null) {

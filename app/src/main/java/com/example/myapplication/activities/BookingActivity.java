@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.CalendarAdapter;
 import com.example.myapplication.adapters.TimeSlotAdapter;
+import com.example.myapplication.models.Ticket;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,23 +59,48 @@ public class BookingActivity extends BaseActivity {
     }
 
     private void setupTimeSlots() {
-        String[] timeSlots = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
+        String[] allTimeSlots = {"08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
                 "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
                 "20:00", "21:00", "22:00"};
 
-        // Здесь нужно проверить какие времена уже заняты в БД
-        List<String> availableSlots = new ArrayList<>();
-        for (String time : timeSlots) {
-            availableSlots.add(time);
-        }
+        new Thread(() -> {
+            // Получаем все заявки на выбранную дату
+            List<Ticket> bookedTickets = database.ticketDao().getTicketsByDate(selectedDate);
 
-        TimeSlotAdapter adapter = new TimeSlotAdapter(availableSlots, time -> {
-            Intent result = new Intent();
-            result.putExtra("selectedDate", selectedDate);
-            result.putExtra("selectedTime", time);
-            setResult(RESULT_OK, result);
-            finish();
-        });
-        recyclerViewTime.setAdapter(adapter);
+            // Создаем список занятых времен
+            List<String> bookedTimes = new ArrayList<>();
+            if (bookedTickets != null) {
+                for (Ticket ticket : bookedTickets) {
+                    String ticketTime = ticket.getTime();
+                    if (ticketTime != null && !ticketTime.isEmpty()) {
+                        bookedTimes.add(ticketTime);
+                    }
+                }
+            }
+
+            // Фильтруем доступные слоты
+            List<String> availableSlots = new ArrayList<>();
+            for (String time : allTimeSlots) {
+                if (!bookedTimes.contains(time)) {
+                    availableSlots.add(time);
+                }
+            }
+
+            runOnUiThread(() -> {
+                if (availableSlots.isEmpty()) {
+                    // Если нет свободных слотов, показываем сообщение
+                    tvSelectedDate.setText("На " + selectedDate + " все время занято");
+                } else {
+                    TimeSlotAdapter adapter = new TimeSlotAdapter(availableSlots, time -> {
+                        Intent result = new Intent();
+                        result.putExtra("selectedDate", selectedDate);
+                        result.putExtra("selectedTime", time);
+                        setResult(RESULT_OK, result);
+                        finish();
+                    });
+                    recyclerViewTime.setAdapter(adapter);
+                }
+            });
+        }).start();
     }
 }

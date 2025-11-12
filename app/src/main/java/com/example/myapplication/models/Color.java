@@ -9,24 +9,48 @@ public class Color {
     private int id;
     private String code;
     private String name;
-    private String price;
+    private String approximatePrice;
 
-    public Color(String code, String name, String price) {
-        this.code = code;
-        this.name = name;
-        this.price = price;
+    public Color() {
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Color(String code, String name, String approximatePrice) {
+        this.code = code;
+        this.name = name;
+        this.approximatePrice = approximatePrice;
+    }
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    // Getters
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getCode() {
+        return code;
+    }
 
-    public String getPrice() { return price; }
-    public void setPrice(String price) { this.price = price; }
+    public String getName() {
+        return name;
+    }
+
+    public String getApproximatePrice() {
+        return approximatePrice;
+    }
+
+    // Setters
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setApproximatePrice(String approximatePrice) {
+        this.approximatePrice = approximatePrice;
+    }
 }

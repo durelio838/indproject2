@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.Calendar;
 import java.util.List;
@@ -44,7 +45,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MonthV
 
     class MonthViewHolder extends RecyclerView.ViewHolder {
         private TextView tvMonthYear;
-        private ViewGroup calendarGrid;
+        private FlexboxLayout calendarGrid;
 
         public MonthViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,56 +65,52 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MonthV
             int daysInMonth = firstDay.getActualMaximum(Calendar.DAY_OF_MONTH);
 
             Calendar today = Calendar.getInstance();
+            today.set(Calendar.HOUR_OF_DAY, 0);
+            today.set(Calendar.MINUTE, 0);
+            today.set(Calendar.SECOND, 0);
+            today.set(Calendar.MILLISECOND, 0);
 
             for (int day = 1; day <= daysInMonth; day++) {
                 Calendar currentDate = (Calendar) firstDay.clone();
                 currentDate.set(Calendar.DAY_OF_MONTH, day);
+                currentDate.set(Calendar.HOUR_OF_DAY, 0);
+                currentDate.set(Calendar.MINUTE, 0);
+                currentDate.set(Calendar.SECOND, 0);
+                currentDate.set(Calendar.MILLISECOND, 0);
 
                 int dayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK);
                 boolean isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
-                boolean isPast = currentDate.before(today) && !isSameDay(currentDate, today);
-                boolean isSelectable = !isPast && !isWeekend;
+                boolean isPast = currentDate.before(today);
 
-                View dayView = createDayView(day, isSelectable, isWeekend);
+                // НЕ показываем квадратики для прошедших дат и выходных
+                if (isPast || isWeekend) {
+                    continue;
+                }
+
+                // Показываем только доступные дни
+                View dayView = createDayView(day);
                 calendarGrid.addView(dayView);
             }
         }
 
-        private View createDayView(int day, boolean isSelectable, boolean isWeekend) {
+        private View createDayView(int day) {
             View dayView = LayoutInflater.from(itemView.getContext())
                     .inflate(R.layout.item_day, calendarGrid, false);
 
             TextView tvDay = dayView.findViewById(R.id.tvDay);
             tvDay.setText(String.valueOf(day));
 
-            if (!isSelectable) {
-                dayView.setBackgroundResource(R.drawable.bg_day_disabled);
-                tvDay.setTextColor(itemView.getContext().getColor(android.R.color.darker_gray));
-            } else if (isWeekend) {
-                dayView.setBackgroundResource(R.drawable.bg_day_weekend);
-                tvDay.setTextColor(itemView.getContext().getColor(android.R.color.holo_red_dark));
-            } else {
-                dayView.setBackgroundResource(R.drawable.bg_day_normal);
-                tvDay.setTextColor(itemView.getContext().getColor(android.R.color.black));
-
-                dayView.setOnClickListener(v -> {
-                    Calendar selectedDate = (Calendar) months.get(getAdapterPosition()).clone();
-                    selectedDate.set(Calendar.DAY_OF_MONTH, day);
-                    String dateStr = String.format(Locale.getDefault(), "%02d.%02d.%d",
-                            day, selectedDate.get(Calendar.MONTH) + 1, selectedDate.get(Calendar.YEAR));
-                    if (listener != null) {
-                        listener.onDateSelected(dateStr);
-                    }
-                });
-            }
+            dayView.setOnClickListener(v -> {
+                Calendar selectedDate = (Calendar) months.get(getAdapterPosition()).clone();
+                selectedDate.set(Calendar.DAY_OF_MONTH, day);
+                String dateStr = String.format(Locale.getDefault(), "%02d.%02d.%d",
+                        day, selectedDate.get(Calendar.MONTH) + 1, selectedDate.get(Calendar.YEAR));
+                if (listener != null) {
+                    listener.onDateSelected(dateStr);
+                }
+            });
 
             return dayView;
-        }
-
-        private boolean isSameDay(Calendar cal1, Calendar cal2) {
-            return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                    cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                    cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
         }
     }
 

@@ -72,7 +72,8 @@ public class ColorSelectorDialog {
             Color color = colors.get(position);
             holder.tvColorName.setText(color.getName());
             holder.tvColorCode.setText(color.getCode());
-            holder.tvColorPrice.setText("~" + color.getPrice() + " руб.");
+            holder.tvColorPrice.setText("Примерная цена: ~" + color.getApproximatePrice() + " ₽");
+
 
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {

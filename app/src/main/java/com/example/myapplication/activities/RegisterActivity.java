@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +28,12 @@ public class RegisterActivity extends BaseActivity {
         initViews();
         setupInputFilters();
         setupPhoneFormatting();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Не показываем меню настроек на экране регистрации
+        return false;
     }
 
     private void initViews() {
@@ -169,7 +176,7 @@ public class RegisterActivity extends BaseActivity {
         } else if (!password.matches(".*[A-ZА-ЯЁ].*")) {
             etPassword.setError("Пароль должен содержать заглавную букву");
             isValid = false;
-        } else if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};:'\"|,.<>?/\\\\].*")) {
+        } else if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};:'\"|\",.<>?/\\\\].*")) {
             etPassword.setError("Пароль должен содержать символ");
             isValid = false;
         }

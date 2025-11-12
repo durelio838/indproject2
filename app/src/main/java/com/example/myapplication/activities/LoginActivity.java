@@ -2,6 +2,7 @@ package com.example.myapplication.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +23,12 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         setupToolbar("Вход", false);
         initViews();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Не показываем меню настроек на экране входа
+        return false;
     }
 
     private void initViews() {
